@@ -45,7 +45,11 @@ func Crawl(url string, depth int, fetcher Fetcher) {
 	fetched := make(map[string]bool)
 	go _Crawl(url, depth, fetcher, ch)
 	fetched[url] = true
-	goRtn := 1 // track number of goroutines that are fetching 
+	// track number of goroutines that are fetching, fetching in a goroutine might 
+	// take a very long time, so other goroutine don't have to wait for it, so we 
+	// have a depth to track when to stop fetching into it, even though it has more
+	// unfetched urls
+	goRtn := 1
 	for goRtn > 0 {
 		fr := <-ch
 		goRtn-- // Get fetched result from a goroutine which is finished
